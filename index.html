@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferenze Email | Piatto Vagante</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="https://www.piattovagante.it/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f5f0e8 0%, #fff9f0 100%);
+            min-height: 100vh;
+            color: #2d2d2d;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 180px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #8B4513;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #8B4513;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f5f0e8;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            flex: 1;
+        }
+
+        .toggle-label strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .toggle-label span {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 28px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #8B4513;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        .time-inputs {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .time-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .time-input label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .time-input input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100px;
+        }
+
+        select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            min-width: 150px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            gap: 12px;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .checkbox-row input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: #8B4513;
+            flex-shrink: 0;
+        }
+
+        .checkbox-label strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .checkbox-label span {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #6d3610;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0f0;
+            border-top-color: #8B4513;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-page {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .error-page h2 {
+            color: #721c24;
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: #8B4513;
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+
+            .time-inputs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://unleazdcocgwjihaxpto.supabase.co/storage/v1/object/public/assets/logo-piatto-vagante.png" alt="Piatto Vagante" class="logo">
+            <h1>Preferenze Email</h1>
+            <p class="subtitle">Gestisci le tue notifiche</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Caricamento preferenze...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-page" class="error-page" style="display: none;">
+            <h2>⚠️ Link non valido</h2>
+            <p id="error-message">Il link è scaduto o non valido. Richiedi un nuovo link da qualsiasi email di Piatto Vagante.</p>
+        </div>
+
+        <!-- Preferences Form -->
+        <form id="preferences-form" style="display: none;">
+            <div id="message" class="message"></div>
+
+            <!-- Master Toggle -->
+            <div class="card">
+                <div class="card-title">📧 Email</div>
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <strong>Ricevi email</strong>
+                        <span>Attiva o disattiva tutte le email</span>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="email_enabled" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Notification Types -->
+            <div class="card" id="notification-types-card">
+                <div class="card-title">🔔 Tipi di Notifica</div>
+                <div class="checkbox-group">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="type_booking_confirmation_user" checked>
+                        <div class="checkbox-label">
+                            <strong>Conferma prenotazione</strong>
+                            <span>Quando la tua prenotazione è confermata</span>
+                        </div>
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="type_cancellation_confirmation_user" checked>
+                        <div class="checkbox-label">
+                            <strong>Conferma cancellazione</strong>
+                            <span>Quando la tua cancellazione è confermata</span>
+                        </div>
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="type_booking_reminder_24h" checked>
+                        <div class="checkbox-label">
+                            <strong>Promemoria 24 ore prima</strong>
+                            <span>Ricorda la tua esperienza il giorno prima</span>
+                        </div>
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="type_booking_reminder_2h" checked>
+                        <div class="checkbox-label">
+                            <strong>Promemoria 2 ore prima</strong>
+                            <span>Ultimo promemoria prima dell'esperienza</span>
+                        </div>
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="type_review_request" checked>
+                        <div class="checkbox-label">
+                            <strong>Richiesta recensione</strong>
+                            <span>Invito a lasciare una recensione dopo l'esperienza</span>
+                        </div>
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="type_payment_failed" checked>
+                        <div class="checkbox-label">
+                            <strong>Problemi di pagamento</strong>
+                            <span>Avvisi su pagamenti non riusciti</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiet Hours -->
+            <div class="card">
+                <div class="card-title">🌙 Ore di Silenzio</div>
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <strong>Attiva ore di silenzio</strong>
+                        <span>Non ricevere notifiche in determinati orari</span>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="quiet_hours_enabled">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="time-inputs" id="quiet-hours-times" style="display: none;">
+                    <div class="time-input">
+                        <label for="quiet_hours_start">Dalle:</label>
+                        <input type="time" id="quiet_hours_start" value="22:00">
+                    </div>
+                    <div class="time-input">
+                        <label for="quiet_hours_end">Alle:</label>
+                        <input type="time" id="quiet_hours_end" value="08:00">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Digest Frequency -->
+            <div class="card" id="digest-card" style="display: none;">
+                <div class="card-title">📊 Report Riepilogativi</div>
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <strong>Frequenza report</strong>
+                        <span>Quanto spesso ricevere i riepiloghi</span>
+                    </div>
+                    <select id="digest_frequency">
+                        <option value="daily">Giornaliero</option>
+                        <option value="weekly" selected>Settimanale</option>
+                        <option value="never">Mai</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" id="save-btn">Salva Preferenze</button>
+        </form>
+
+        <div class="footer">
+            <p>© 2025 Piatto Vagante</p>
+            <p><a href="https://www.piattovagante.it">www.piattovagante.it</a></p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://unleazdcocgwjihaxpto.supabase.co/functions/v1/manage-email-preferences';
+        
+        // Get token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        const loadingEl = document.getElementById('loading');
+        const errorPageEl = document.getElementById('error-page');
+        const errorMessageEl = document.getElementById('error-message');
+        const formEl = document.getElementById('preferences-form');
+        const messageEl = document.getElementById('message');
+        const saveBtnEl = document.getElementById('save-btn');
+
+        // Elements
+        const emailEnabledEl = document.getElementById('email_enabled');
+        const notificationTypesCardEl = document.getElementById('notification-types-card');
+        const quietHoursEnabledEl = document.getElementById('quiet_hours_enabled');
+        const quietHoursTimesEl = document.getElementById('quiet-hours-times');
+        const quietHoursStartEl = document.getElementById('quiet_hours_start');
+        const quietHoursEndEl = document.getElementById('quiet_hours_end');
+        const digestFrequencyEl = document.getElementById('digest_frequency');
+        const digestCardEl = document.getElementById('digest-card');
+
+        // Notification type checkboxes
+        const typeCheckboxes = {
+            booking_confirmation_user: document.getElementById('type_booking_confirmation_user'),
+            cancellation_confirmation_user: document.getElementById('type_cancellation_confirmation_user'),
+            booking_reminder_24h: document.getElementById('type_booking_reminder_24h'),
+            booking_reminder_2h: document.getElementById('type_booking_reminder_2h'),
+            review_request: document.getElementById('type_review_request'),
+            payment_failed: document.getElementById('type_payment_failed')
+        };
+
+        let recipientType = 'user';
+
+        // Toggle visibility based on email enabled
+        emailEnabledEl.addEventListener('change', function() {
+            notificationTypesCardEl.style.opacity = this.checked ? '1' : '0.5';
+            notificationTypesCardEl.style.pointerEvents = this.checked ? 'auto' : 'none';
+        });
+
+        // Toggle quiet hours times visibility
+        quietHoursEnabledEl.addEventListener('change', function() {
+            quietHoursTimesEl.style.display = this.checked ? 'flex' : 'none';
+        });
+
+        // Load preferences
+        async function loadPreferences() {
+            if (!token) {
+                showError('Token mancante. Usa il link ricevuto via email.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}?token=${encodeURIComponent(token)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Errore nel caricamento delle preferenze');
+                    return;
+                }
+
+                // Set recipient type (for showing/hiding operator-specific options)
+                recipientType = data.recipient_type || 'user';
+                
+                // Show digest card only for operators
+                if (recipientType === 'operator') {
+                    digestCardEl.style.display = 'block';
+                }
+
+                // Populate form
+                const prefs = data.preferences;
+                
+                emailEnabledEl.checked = prefs.email_enabled !== false;
+                quietHoursEnabledEl.checked = prefs.quiet_hours_enabled === true;
+                quietHoursTimesEl.style.display = prefs.quiet_hours_enabled ? 'flex' : 'none';
+                
+                if (prefs.quiet_hours_start) {
+                    quietHoursStartEl.value = prefs.quiet_hours_start;
+                }
+                if (prefs.quiet_hours_end) {
+                    quietHoursEndEl.value = prefs.quiet_hours_end;
+                }
+                
+                if (prefs.digest_frequency) {
+                    digestFrequencyEl.value = prefs.digest_frequency;
+                }
+
+                // Notification types
+                if (prefs.notification_types_enabled) {
+                    for (const [key, checkbox] of Object.entries(typeCheckboxes)) {
+                        if (prefs.notification_types_enabled[key] !== undefined) {
+                            checkbox.checked = prefs.notification_types_enabled[key];
+                        }
+                    }
+                }
+
+                // Update UI based on email enabled
+                notificationTypesCardEl.style.opacity = emailEnabledEl.checked ? '1' : '0.5';
+                notificationTypesCardEl.style.pointerEvents = emailEnabledEl.checked ? 'auto' : 'none';
+
+                // Show form
+                loadingEl.style.display = 'none';
+                formEl.style.display = 'block';
+
+            } catch (err) {
+                console.error('Load error:', err);
+                showError('Errore di connessione. Riprova più tardi.');
+            }
+        }
+
+        // Save preferences
+        async function savePreferences(e) {
+            e.preventDefault();
+            
+            saveBtnEl.disabled = true;
+            saveBtnEl.textContent = 'Salvataggio...';
+            messageEl.className = 'message';
+            messageEl.style.display = 'none';
+
+            // Build notification types object
+            const notificationTypesEnabled = {};
+            for (const [key, checkbox] of Object.entries(typeCheckboxes)) {
+                notificationTypesEnabled[key] = checkbox.checked;
+            }
+
+            const payload = {
+                email_enabled: emailEnabledEl.checked,
+                notification_types_enabled: notificationTypesEnabled,
+                quiet_hours_enabled: quietHoursEnabledEl.checked,
+                quiet_hours_start: quietHoursStartEl.value,
+                quiet_hours_end: quietHoursEndEl.value
+            };
+
+            // Add digest frequency for operators
+            if (recipientType === 'operator') {
+                payload.digest_frequency = digestFrequencyEl.value;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}?token=${encodeURIComponent(token)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Errore nel salvataggio');
+                }
+
+                messageEl.textContent = '✅ Preferenze salvate con successo!';
+                messageEl.className = 'message success';
+
+            } catch (err) {
+                console.error('Save error:', err);
+                messageEl.textContent = '❌ ' + err.message;
+                messageEl.className = 'message error';
+            } finally {
+                saveBtnEl.disabled = false;
+                saveBtnEl.textContent = 'Salva Preferenze';
+            }
+        }
+
+        function showError(message) {
+            loadingEl.style.display = 'none';
+            errorMessageEl.textContent = message;
+            errorPageEl.style.display = 'block';
+        }
+
+        // Event listeners
+        formEl.addEventListener('submit', savePreferences);
+
+        // Init
+        loadPreferences();
+    </script>
+</body>
+</html>
